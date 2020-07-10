@@ -1,0 +1,20 @@
+{
+  "name": "web3contacts",
+  "private": true,
+  "scripts": {
+    "start": "parcel serve index.html",
+    "build": "parcel build index.html",
+    "clean": "rimraf .parcel-cache dist"
+  },
+  "author": "vuldin <hello@vuld.in>",
+  "devDependencies": {
+    "parcel": "next",
+    "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "3box": "^1.20.1",
+    "@metamask/onboarding": "^1.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
