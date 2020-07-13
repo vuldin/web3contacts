@@ -10,7 +10,7 @@ export default function OnboardingButton() {
   const [buttonText, setButtonText] = useState(ONBOARD_TEXT);
   const [isDisabled, setDisabled] = useState(false);
 
-  const { accounts, setAccounts } = store.useAccounts;
+  const { accountPublicKey, setAccountPublicKey } = store.useAccountPublicKey;
 
   const onboarding = useRef();
 
@@ -22,7 +22,7 @@ export default function OnboardingButton() {
 
   useEffect(() => {
     if (MetaMaskOnboarding.isMetaMaskInstalled()) {
-      if (accounts.length > 0) {
+      if (accountPublicKey) {
         setButtonText(CONNECTED_TEXT);
         setDisabled(true);
         onboarding.current.stopOnboarding();
@@ -31,11 +31,11 @@ export default function OnboardingButton() {
         setDisabled(false);
       }
     }
-  }, [accounts]);
+  }, [accountPublicKey]);
 
   useEffect(() => {
     function handleNewAccounts(newAccounts) {
-      setAccounts(newAccounts);
+      setAccountPublicKey(newAccounts[0]);
     }
     if (MetaMaskOnboarding.isMetaMaskInstalled()) {
       window.ethereum
@@ -52,7 +52,7 @@ export default function OnboardingButton() {
     if (MetaMaskOnboarding.isMetaMaskInstalled()) {
       window.ethereum
         .request({ method: "eth_requestAccounts" })
-        .then((newAccounts) => setAccounts(newAccounts));
+        .then((newAccounts) => setAccountPublicKey(newAccounts[0]));
     } else {
       onboarding.current.startOnboarding();
     }
