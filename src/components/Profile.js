@@ -10,10 +10,7 @@ export default function Profile() {
       const profile = await Box.getProfile(accountPublicKey);
       setProfile(profile);
     }
-    if (accountPublicKey) {
-      console.log("accountPublicKey", accountPublicKey);
-      getProfileInfo();
-    }
+    accountPublicKey ? getProfileInfo() : setProfile({});
   }, [accountPublicKey]);
 
   return (

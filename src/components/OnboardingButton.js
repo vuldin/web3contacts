@@ -4,11 +4,13 @@ import store from "../state/store";
 
 const ONBOARD_TEXT = "Click here to install MetaMask!";
 const CONNECT_TEXT = "Connect";
+const DISCONNECT_TEXT = "Disconnect";
 const CONNECTED_TEXT = "Connected";
+const DISCONNECTED_TEXT = "Disconnected";
 
 export default function OnboardingButton() {
   const [buttonText, setButtonText] = useState(ONBOARD_TEXT);
-  const [isDisabled, setDisabled] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   const { accountPublicKey, setAccountPublicKey } = store.useAccountPublicKey;
 
@@ -23,12 +25,12 @@ export default function OnboardingButton() {
   useEffect(() => {
     if (MetaMaskOnboarding.isMetaMaskInstalled()) {
       if (accountPublicKey) {
-        setButtonText(CONNECTED_TEXT);
-        setDisabled(true);
+        setButtonText(DISCONNECT_TEXT);
+        setIsConnected(true);
         onboarding.current.stopOnboarding();
       } else {
         setButtonText(CONNECT_TEXT);
-        setDisabled(false);
+        setIsConnected(false);
       }
     }
   }, [accountPublicKey]);
@@ -48,7 +50,7 @@ export default function OnboardingButton() {
     }
   }, []);
 
-  const onClick = () => {
+  function connectOnClick() {
     if (MetaMaskOnboarding.isMetaMaskInstalled()) {
       window.ethereum
         .request({ method: "eth_requestAccounts" })
@@ -56,11 +58,19 @@ export default function OnboardingButton() {
     } else {
       onboarding.current.startOnboarding();
     }
-  };
+  }
+
+  function disconnectOnClick() {
+    setAccountPublicKey();
+    setIsConnected(false);
+  }
 
   return (
-    <button disabled={isDisabled} onClick={onClick}>
-      {buttonText}
-    </button>
+    <>
+      <button onClick={isConnected ? disconnectOnClick : connectOnClick}>
+        {buttonText}
+      </button>
+      <span>{isConnected ? CONNECTED_TEXT : DISCONNECTED_TEXT}</span>
+    </>
   );
 }
