@@ -13,10 +13,7 @@ export default function Profile() {
     accountPublicKey ? getProfileInfo() : setProfile({});
   }, [accountPublicKey]);
 
-  return (
-    <div>
-      <span>{profile.name}</span>
-      <span>{profile.emoji}</span>
-    </div>
-  );
+  return {
+    profile,
+  };
 }
