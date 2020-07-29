@@ -19,6 +19,7 @@ export default function Status() {
       firstRender.current = false;
       return;
     }
+
     async function updateSyncDisplay() {
       setShowSync(true);
       if (!isBoxSyncing) {

@@ -7,7 +7,7 @@ import useSpace from "./state/useSpace";
 import useStatus from "./state/useStatus";
 import Connect from "./components/Connect";
 import Status from "./components/Status";
-//import ContactInfo from "./components/ContactInfo";
+import ContactInfo from "./components/ContactInfo";
 
 export default function App() {
   store.useAccountPublicKey = useAccountPublicKey();
@@ -20,9 +20,7 @@ export default function App() {
     <>
       <Status />
       <Connect />
-      {/*
       <ContactInfo />
-      */}
     </>
   );
 }
