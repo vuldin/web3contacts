@@ -50,7 +50,14 @@ export default function Connect() {
 
   return (
     <>
-      {!isConnected && <button onClick={connectOnClick}>{CONNECT_TEXT}</button>}
+      {!isConnected && (
+        <button
+          className="bg-orange-700 hover:bg-orange-800 font-bold py-1 px-4 rounded"
+          onClick={connectOnClick}
+        >
+          {CONNECT_TEXT}
+        </button>
+      )}
     </>
   );
 }

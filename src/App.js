@@ -15,12 +15,12 @@ export default function App() {
   store.useSpace = useSpace();
   store.useStatus = useStatus();
   store.useProfile = useProfile();
+  const { isConnected } = store.useStatus;
 
   return (
-    <>
-      <Status />
-      <Connect />
+    <div className="p-2 float-right">
+      {isConnected ? <Status /> : <Connect />}
       <ContactInfo />
-    </>
+    </div>
   );
 }

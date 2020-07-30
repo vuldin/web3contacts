@@ -10,16 +10,10 @@ import { sleep } from "../helpers";
 
 export default function Status() {
   const [showSync, setShowSync] = useState(false);
-  const firstRender = useRef(true);
-  const { isConnected, isBoxSyncing } = store.useStatus;
+  const { isBoxSyncing } = store.useStatus;
   const { profile } = store.useProfile;
 
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-
     async function updateSyncDisplay() {
       setShowSync(true);
       if (!isBoxSyncing) {
@@ -33,9 +27,8 @@ export default function Status() {
 
   return (
     <div>
-      <span>{profile.name && profile.name}</span>
-      <span>{isConnected ? `${CONNECTED_TEXT}` : `${DISCONNECTED_TEXT}`}</span>
-      <span>
+      <span>{profile.name && `Hi ${profile.name}!`}</span>
+      <span className="text-sm text-gray-600 pl-2 inline-block w-32">
         {showSync && (isBoxSyncing ? `${DESYNCED_TEXT}` : `${SYNCED_TEXT}`)}
       </span>
     </div>
