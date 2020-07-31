@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import store from "../state/store";
 
-export default function ContactInfo() {
+export default function AddressBook() {
   const [thread, setThread] = useState();
   const [posts, setPosts] = useState([]);
   const firstRender = useRef(true);

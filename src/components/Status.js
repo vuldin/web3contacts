@@ -1,11 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import store from "../state/store";
-import {
-  CONNECTED_TEXT,
-  DISCONNECTED_TEXT,
-  SYNCED_TEXT,
-  DESYNCED_TEXT,
-} from "../constants";
+import { SYNCED_TEXT, DESYNCED_TEXT } from "../constants";
 import { sleep } from "../helpers";
 
 export default function Status() {
@@ -27,8 +22,14 @@ export default function Status() {
 
   return (
     <div>
-      <span>{profile.name && `Hi ${profile.name}!`}</span>
-      <span className="text-sm text-gray-600 pl-2 inline-block w-32">
+      {profile?.image?.[0]?.contentUrl?.["/"] && (
+        <img
+          className="inline-block w-8 h-8"
+          src={`https://ipfs.infura.io/ipfs/${profile.image[0].contentUrl["/"]}`}
+          alt="profile"
+        />
+      )}
+      <span className="inline-block w-32 pl-2 text-sm text-gray-600">
         {showSync && (isBoxSyncing ? `${DESYNCED_TEXT}` : `${SYNCED_TEXT}`)}
       </span>
     </div>
