@@ -22,16 +22,16 @@ export default function Status() {
 
   return (
     <div>
+      <span className="inline-block w-32 pl-2 text-sm text-gray-600">
+        {showSync && (isBoxSyncing ? `${DESYNCED_TEXT}` : `${SYNCED_TEXT}`)}
+      </span>
       {profile?.image?.[0]?.contentUrl?.["/"] && (
         <img
-          className="inline-block w-8 h-8"
+          className="inline-block w-8 h-8 rounded"
           src={`https://ipfs.infura.io/ipfs/${profile.image[0].contentUrl["/"]}`}
           alt="profile"
         />
       )}
-      <span className="inline-block w-32 pl-2 text-sm text-gray-600">
-        {showSync && (isBoxSyncing ? `${DESYNCED_TEXT}` : `${SYNCED_TEXT}`)}
-      </span>
     </div>
   );
 }

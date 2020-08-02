@@ -8,8 +8,8 @@ export default function Navbar() {
   const { isConnected } = store.useStatus;
 
   return (
-    <div className="flex p-2">
-      <div className="flex items-center flex-none pl-32">
+    <div className="flex">
+      <div className="flex items-center flex-none text-lg">
         <span className="font-light">Drasil</span>
         <LightningBolt className="w-4 h-4" />
         <span className="font-bold">Contacts</span>

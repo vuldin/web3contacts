@@ -9,6 +9,7 @@ export default function Connect() {
     setIsBoxSyncing,
     isConnected,
     setIsConnected,
+    setIsInitialSyncComplete,
   } = store.useStatus;
   const { box } = store.useBox;
   const { space } = store.useSpace;
@@ -22,6 +23,7 @@ export default function Connect() {
         space.current = await box.current.openSpace(spaceName);
         await box.current.syncDone;
         setIsBoxSyncing(false);
+        setIsInitialSyncComplete(true);
       }
     }
 
@@ -50,14 +52,18 @@ export default function Connect() {
 
   return (
     <>
+      {/*
       {!isConnected && (
-        <button
-          className="px-4 py-1 mr-32 font-bold bg-orange-700 rounded hover:bg-orange-800"
-          onClick={connectOnClick}
-        >
-          {CONNECT_TEXT}
-        </button>
+      */}
+      <button
+        className="px-4 py-1 font-bold bg-orange-700 rounded hover:bg-orange-800"
+        onClick={connectOnClick}
+      >
+        {CONNECT_TEXT}
+      </button>
+      {/*
       )}
+      */}
     </>
   );
 }
