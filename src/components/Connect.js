@@ -1,69 +1,22 @@
-import React, { useEffect } from "react";
+import React from "react";
 import store from "../state/store";
 import { CONNECT_TEXT } from "../constants";
 
 export default function Connect() {
-  const { accountPublicKey, setAccountPublicKey } = store.useAccountPublicKey;
-  const {
-    spaceName,
-    setIsBoxSyncing,
-    isConnected,
-    setIsConnected,
-    setIsInitialSyncComplete,
-  } = store.useStatus;
-  const { box } = store.useBox;
-  const { space } = store.useSpace;
-
-  useEffect(() => {
-    async function setBoxAndSpace() {
-      if (!box.current) {
-        setIsBoxSyncing(true);
-        box.current = await Box.create(window.ethereum);
-        await box.current.auth([spaceName], { address: accountPublicKey });
-        space.current = await box.current.openSpace(spaceName);
-        await box.current.syncDone;
-        setIsBoxSyncing(false);
-        setIsInitialSyncComplete(true);
-      }
-    }
-
-    function handleNewAccounts(newAccounts) {
-      setAccountPublicKey(newAccounts[0]);
-    }
-
-    if (accountPublicKey) {
-      setBoxAndSpace();
-      setIsConnected(true);
-    } else {
-      setIsConnected(false);
-    }
-
-    window.ethereum.on("accountsChanged", handleNewAccounts);
-    return () => {
-      window.ethereum.off("accountsChanged", handleNewAccounts);
-    };
-  }, [accountPublicKey]);
-
-  function connectOnClick() {
-    window.ethereum
-      ?.request({ method: "eth_requestAccounts" })
-      .then((newAccounts) => setAccountPublicKey(newAccounts[0]));
-  }
+  const { setAccountPublicKey } = store.useAccountPublicKey;
 
   return (
     <>
-      {/*
-      {!isConnected && (
-      */}
       <button
-        className="px-4 py-1 font-bold bg-orange-700 rounded hover:bg-orange-800"
-        onClick={connectOnClick}
+        className="inline-flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-orange-600 border border-transparent rounded-md hover:bg-orange-500 focus:outline-none focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700"
+        onClick={() =>
+          window.ethereum
+            ?.request({ method: "eth_requestAccounts" })
+            .then((newAccounts) => setAccountPublicKey(newAccounts[0]))
+        }
       >
         {CONNECT_TEXT}
       </button>
-      {/*
-      )}
-      */}
     </>
   );
 }

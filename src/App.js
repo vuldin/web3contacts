@@ -1,30 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { ADDRESS_BOOK_TITLE, INFO_TITLE, ACTIVITY_TITLE } from "./constants";
+import {
+  ACTIVITY_TITLE,
+  ADDRESS_BOOK_TITLE,
+  DESYNCED_TEXT,
+  INFO_TITLE,
+  SYNCED_TEXT,
+} from "./constants";
 import store from "./state/store";
 import useAccountPublicKey from "./state/useAccountPublicKey";
-import useBox from "./state/useBox";
+import use3Box from "./state/use3Box";
 import usePageTitle from "./state/usePageTitle";
-import useProfile from "./state/useProfile";
-import useSpace from "./state/useSpace";
 import useStatus from "./state/useStatus";
-import AddressBook from "./components/AddressBook";
+import Activity from "./components/Activity";
+import Contacts from "./components/Contacts";
 import Connect from "./components/Connect";
-import ContactInfo from "./components/ContactInfo";
+import Info from "./components/Info";
+import Status from "./components/Status";
 import Transition from "./components/Transition";
+import Bell from "../svgs/bell.svg";
 import Logo from "../svgs/logo.svg";
+import MenuOpen from "../svgs/menu-open.svg";
+import MenuClose from "../svgs/menu-close.svg";
+import Plus from "../svgs/plus.svg";
 
 export default function App() {
   const [isOpen, setIsOpen] = useState(false);
   store.useAccountPublicKey = useAccountPublicKey();
-  store.useBox = useBox();
-  store.useSpace = useSpace();
   store.useStatus = useStatus();
-  store.useProfile = useProfile();
+  store.use3Box = use3Box();
   store.usePageTitle = usePageTitle();
 
-  const { profile } = store.useProfile;
-  const { isConnected } = store.useStatus;
+  const { profile } = store.use3Box;
+  const { isBoxSyncing, isConnected, showSync } = store.useStatus;
   const { pageTitle } = store.usePageTitle;
 
   function isLinkActive(title) {
@@ -46,7 +54,7 @@ export default function App() {
               <div className="border-b border-gray-700">
                 <div className="flex items-center justify-between h-16 px-4 sm:px-0">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 text-gray-300">
                       <Logo className="w-8 h-8" />
                     </div>
                     <div className="hidden md:block">
@@ -84,23 +92,17 @@ export default function App() {
                         <Connect />
                       ) : (
                         <>
+                          <span className="inline-block text-sm text-gray-600">
+                            {showSync &&
+                              (isBoxSyncing
+                                ? `${DESYNCED_TEXT}`
+                                : `${SYNCED_TEXT}`)}
+                          </span>
                           <button
                             className="p-1 text-gray-400 border-2 border-transparent rounded-full hover:text-white focus:outline-none focus:text-white focus:bg-gray-700"
                             aria-label="Notifications"
                           >
-                            <svg
-                              className="w-6 h-6"
-                              stroke="currentColor"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                              />
-                            </svg>
+                            <Bell className="w-6 h-6" />
                           </button>
 
                           <div className="relative ml-3">
@@ -136,12 +138,6 @@ export default function App() {
                                     href="#"
                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                   >
-                                    Your Profile
-                                  </a>
-                                  <a
-                                    href="#"
-                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                  >
                                     Settings
                                   </a>
                                   <a
@@ -163,32 +159,12 @@ export default function App() {
                       className="inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:bg-gray-700 focus:text-white"
                       onClick={() => setIsOpen(!isOpen)}
                     >
-                      <svg
+                      <MenuOpen
                         className={`${isOpen ? "hidden" : "block"} w-6 h-6`}
-                        stroke="currentColor"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M4 6h16M4 12h16M4 18h16"
-                        />
-                      </svg>
-                      <svg
+                      />
+                      <MenuClose
                         className={`${isOpen ? "block" : "hidden"} w-6 h-6`}
-                        stroke="currentColor"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
+                      />
                     </button>
                   </div>
                 </div>
@@ -216,14 +192,13 @@ export default function App() {
                   Activity
                 </a>
               </div>
-              <div className="pt-4 pb-3 border-t border-gray-700">
+              <div className="px-6 pt-4 pb-3 border-t border-gray-700">
                 {!isConnected ? (
-                  <div className="px-5">
-                    <Connect />
-                  </div>
+                  <Connect />
                 ) : (
                   <>
-                    {/*}
+                    <Status />
+                    {/*
                     <div className="flex items-center px-5">
                       <div className="flex-shrink-0">
                         <img
@@ -269,22 +244,12 @@ export default function App() {
                         Sign out
                       </a>
                     </div>
-                */}
+                    */}
                   </>
                 )}
               </div>
             </div>
           </nav>
-          {/*
-          <header className="py-10">
-            <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-9 text-white">
-                <span>{pageTitle}</span>
-                <span className="font-normal"> (1)</span>
-              </h1>
-            </div>
-          </header>
-          */}
         </div>
 
         <main className="-mt-32">
@@ -293,17 +258,22 @@ export default function App() {
           */}
           <div className="pb-12 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="py-6 bg-white shadow sm:px-5 sm:rounded-lg sm:px-6">
-              <Route path="/" exact component={AddressBook}></Route>
-              <Route path="/info" exact component={ContactInfo}></Route>
-              <Route
-                path="/activity"
-                exact
-                component={function () {
-                  return <div>activity</div>;
-                }}
-              ></Route>
+              <Route path="/" exact component={Contacts}></Route>
+              <Route path="/info" exact component={Info}></Route>
+              <Route path="/activity" exact component={Activity}></Route>
             </div>
           </div>
+          {isConnected && (
+            <span className="absolute inset-x-0 bottom-0 flex justify-center px-6 pb-6 rounded-md shadow-sm sm:justify-end sm:static sm:inline-flex">
+              <button
+                type="button"
+                className="inline-flex items-center px-6 py-6 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-orange-700 border border-transparent rounded-full sm:py-3 sm:rounded-md hover:bg-orange-800 focus:outline-none focus:border-orange-900 focus:shadow-outline-indigo active:bg-indigo-700"
+              >
+                <Plus className="w-6 h-6" />
+                <span className="hidden sm:inline sm:pl-2">Add Contacts</span>
+              </button>
+            </span>
+          )}
         </main>
       </div>
     </Router>
