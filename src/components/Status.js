@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import store from "../state/store";
 import { SYNCED_TEXT, DESYNCED_TEXT } from "../constants";
 
@@ -15,7 +15,7 @@ export default function Status() {
           alt="profile"
         />
       )}
-      <span className="pl-2">{profile.name}</span>
+      <span className="pl-2 text-gray-300">{profile.name}</span>
       <span className="inline-block pl-2 text-sm text-gray-600">
         {showSync && (isBoxSyncing ? `${DESYNCED_TEXT}` : `${SYNCED_TEXT}`)}
       </span>

@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 import {
   ACTIVITY_TITLE,
   ADDRESS_BOOK_TITLE,
@@ -18,6 +23,7 @@ import Connect from "./components/Connect";
 import Info from "./components/Info";
 import Status from "./components/Status";
 import Transition from "./components/Transition";
+import Welcome from "./components/Welcome";
 import Bell from "../svgs/bell.svg";
 import Logo from "../svgs/logo.svg";
 import MenuOpen from "../svgs/menu-open.svg";
@@ -55,20 +61,22 @@ export default function App() {
                 <div className="flex items-center justify-between h-16 px-4 sm:px-0">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 text-gray-300">
-                      <Logo className="w-8 h-8" />
+                      <Link to="/">
+                        <Logo className="w-8 h-8" />
+                      </Link>
                     </div>
-                    <div className="hidden md:block">
+                    <div className={`hidden ${isConnected && "md:block"}`}>
                       <div className="flex items-baseline ml-10">
                         <Link
-                          to="/"
+                          to="/contacts"
                           className={`${isLinkActive(
                             ADDRESS_BOOK_TITLE
-                          )} px-3 py-2 text-sm font-medium rounded-md focus:outline-none focus:text-white focus:bg-gray-700`}
+                          )} px-3 py-2 text-lg font-medium rounded-md focus:outline-none focus:text-white focus:bg-gray-700`}
                         >
                           {ADDRESS_BOOK_TITLE}
                         </Link>
                         <Link
-                          to="/info"
+                          to="/contacts/info"
                           className={`${isLinkActive(
                             INFO_TITLE
                           )} px-3 py-2 ml-4 text-sm font-medium rounded-md focus:outline-none focus:text-white focus:bg-gray-700`}
@@ -76,7 +84,7 @@ export default function App() {
                           {INFO_TITLE}
                         </Link>
                         <Link
-                          to="/activity"
+                          to="/contacts/activity"
                           className={`${isLinkActive(
                             ACTIVITY_TITLE
                           )} px-3 py-2 ml-4 text-sm font-medium rounded-md focus:outline-none focus:text-white focus:bg-gray-700`}
@@ -172,98 +180,77 @@ export default function App() {
             </div>
 
             <div className={`${isOpen ? "block" : "hidden"} md:hidden`}>
-              <div className="px-2 py-3 sm:px-3">
-                <a
-                  href="#"
-                  className="block px-3 py-2 text-base font-medium text-white bg-gray-900 rounded-md focus:outline-none focus:text-white focus:bg-gray-700"
+              <div
+                className={`${
+                  isConnected ? "block" : "hidden"
+                } px-2 py-3 sm:px-3`}
+              >
+                <Link
+                  to="/contacts"
+                  className={`${isLinkActive(
+                    ADDRESS_BOOK_TITLE
+                  )} block px-3 py-2 text-lg font-medium rounded-md focus:outline-none focus:text-white focus:bg-gray-700`}
                 >
-                  Address Book
-                </a>
-                <a
-                  href="#"
-                  className="block px-3 py-2 mt-1 text-base font-medium text-gray-300 rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700"
+                  {ADDRESS_BOOK_TITLE}
+                </Link>
+                <Link
+                  to="/contacts/info"
+                  className={`${isLinkActive(
+                    INFO_TITLE
+                  )} block px-3 py-2 ml-4 text-sm font-medium rounded-md focus:outline-none focus:text-white focus:bg-gray-700`}
                 >
-                  Your Info
-                </a>
-                <a
-                  href="#"
-                  className="block px-3 py-2 mt-1 text-base font-medium text-gray-300 rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700"
+                  {INFO_TITLE}
+                </Link>
+                <Link
+                  to="/contacts/activity"
+                  className={`${isLinkActive(
+                    ACTIVITY_TITLE
+                  )} block px-3 py-2 ml-4 text-sm font-medium rounded-md focus:outline-none focus:text-white focus:bg-gray-700`}
                 >
-                  Activity
-                </a>
+                  {ACTIVITY_TITLE}
+                </Link>
               </div>
               <div className="px-6 pt-4 pb-3 border-t border-gray-700">
-                {!isConnected ? (
-                  <Connect />
-                ) : (
-                  <>
-                    <Status />
-                    {/*
-                    <div className="flex items-center px-5">
-                      <div className="flex-shrink-0">
-                        <img
-                          className="w-10 h-10 rounded-full"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                          alt=""
-                        ></img>
-                      </div>
-                      <div className="ml-3">
-                        <div className="text-base font-medium leading-none text-white">
-                          Tom Cook
-                        </div>
-                        <div className="mt-1 text-sm font-medium leading-none text-gray-400">
-                          tom@example.com
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      className="px-2 mt-3"
-                      role="menu"
-                      aria-orientation="vertical"
-                      aria-labelledby="user-menu"
-                    >
-                      <a
-                        href="#"
-                        className="block px-3 py-2 text-base font-medium text-gray-400 rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700"
-                        role="menuitem"
-                      >
-                        Your Profile
-                      </a>
-                      <a
-                        href="#"
-                        className="block px-3 py-2 mt-1 text-base font-medium text-gray-400 rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700"
-                        role="menuitem"
-                      >
-                        Settings
-                      </a>
-                      <a
-                        href="#"
-                        className="block px-3 py-2 mt-1 text-base font-medium text-gray-400 rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700"
-                        role="menuitem"
-                      >
-                        Sign out
-                      </a>
-                    </div>
-                    */}
-                  </>
-                )}
+                {!isConnected ? <Connect /> : <Status />}
               </div>
             </div>
           </nav>
         </div>
 
         <main className="-mt-32">
-          {/*
-          <div className="px-4 pb-12 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          */}
           <div className="pb-12 mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div className="py-6 bg-white shadow sm:px-5 sm:rounded-lg sm:px-6">
-              <Route path="/" exact component={Contacts}></Route>
-              <Route path="/info" exact component={Info}></Route>
-              <Route path="/activity" exact component={Activity}></Route>
-            </div>
+            <Route path="/" exact>
+              <Welcome />
+            </Route>
+            <Route path="/contacts" exact>
+              {isConnected ? (
+                <div className="py-6 bg-white shadow sm:px-5 sm:rounded-lg sm:px-6">
+                  <Contacts />
+                </div>
+              ) : (
+                <Redirect to="/" />
+              )}
+            </Route>
+            <Route path="/contacts/info" exact>
+              {isConnected ? (
+                <div className="py-6 bg-white shadow sm:px-5 sm:rounded-lg sm:px-6">
+                  <Info />
+                </div>
+              ) : (
+                <Redirect to="/" />
+              )}
+            </Route>
+            <Route path="/contacts/activity" exact>
+              {isConnected ? (
+                <div className="py-6 bg-white shadow sm:px-5 sm:rounded-lg sm:px-6">
+                  <Activity />
+                </div>
+              ) : (
+                <Redirect to="/" />
+              )}
+            </Route>
           </div>
-          {isConnected && (
+          {/*isConnected && (
             <span className="absolute inset-x-0 bottom-0 flex justify-center px-6 pb-6 rounded-md shadow-sm sm:justify-end sm:static sm:inline-flex">
               <button
                 type="button"
@@ -273,7 +260,7 @@ export default function App() {
                 <span className="hidden sm:inline sm:pl-2">Add Contacts</span>
               </button>
             </span>
-          )}
+          )*/}
         </main>
       </div>
     </Router>

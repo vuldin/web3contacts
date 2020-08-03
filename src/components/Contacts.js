@@ -17,7 +17,6 @@ export default function Contacts() {
   ]);
   const firstRender = useRef(true);
   const { setPageTitle } = store.usePageTitle;
-  const { isConnected } = store.useStatus;
   const threadName = "contactInfo";
 
   function parsePosts(posts) {
@@ -108,14 +107,8 @@ export default function Contacts() {
             </table>
           ) : (
             <div className="flex items-center justify-center h-10 text-gray-900">
-              {isConnected ? (
-                <>
-                  <span className="text-xl">No contacts</span>
-                  <MoodNeutral className="inline-block w-6 h-6 ml-2" />
-                </>
-              ) : (
-                <div>Login to see Contacts</div>
-              )}
+              <span className="text-xl">No contacts</span>
+              <MoodNeutral className="inline-block w-6 h-6 ml-2" />
             </div>
           )}
         </div>
