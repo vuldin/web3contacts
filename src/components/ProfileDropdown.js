@@ -1,5 +1,4 @@
 import React from 'react'
-import Selected from '../../svgs/approve.svg'
 
 export default function ProfileDropdown() {
   return (

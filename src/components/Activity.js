@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react'
 import store from '../state/store'
 import { ACTIVITY_TITLE } from '../constants'
 import ProfileDropdown from './ProfileDropdown'
-import IncomingRequestImage from '../../svgs/arrow-circle-left.svg'
-import OutgoingRequestImage from '../../svgs/arrow-circle-right.svg'
-import Approve from '../../svgs/approve.svg'
-import Reject from '../../svgs/reject.svg'
+import Approve from '../../media/svgs/approve.svg'
+import Reject from '../../media/svgs/reject.svg'
 
 export default function Activity() {
   const [isLogShown, setIsLogShown] = useState(false)
@@ -118,13 +116,14 @@ export default function Activity() {
             </div>
           </div>
         </div>
+            className="inline-flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-orange-600 border border-transparent rounded-md hover:bg-orange-500 focus:outline-none focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700"
       */}
       </div>
       <div className="mt-5">
         <span className="inline-flex pl-6 mb-3 rounded-md shadow-sm sm:pl-0">
           <button
             type="button"
-            className="inline-flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-orange-600 border border-transparent rounded-md hover:bg-orange-500 focus:outline-none focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700"
+            className="inline-flex items-center px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50"
             id="user-menu"
             aria-label="User menu"
             aria-haspopup="true"

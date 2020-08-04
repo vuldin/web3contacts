@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import store from '../state/store'
 import { INFO_TITLE } from '../constants'
-import DefaultProfileImage from '../../svgs/default-profile.svg'
+import DefaultProfileImage from '../../media/svgs/default-profile.svg'
 
 export default function Info() {
   const { setPageTitle } = store.usePageTitle

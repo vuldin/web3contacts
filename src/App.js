@@ -14,15 +14,13 @@ import usePageTitle from './state/usePageTitle'
 import useStatus from './state/useStatus'
 import Activity from './components/Activity'
 import Contacts from './components/Contacts'
-import Connect from './components/Connect'
 import Info from './components/Info'
 import Status from './components/Status'
 import Transition from './components/Transition'
 import Welcome from './components/Welcome'
-import Bell from '../svgs/bell.svg'
-import Logo from '../svgs/logo.svg'
-import MenuOpen from '../svgs/menu-open.svg'
-import MenuClose from '../svgs/menu-close.svg'
+import Logo from '../media/svgs/logo.svg'
+import MenuOpen from '../media/svgs/menu-open.svg'
+import MenuClose from '../media/svgs/menu-close.svg'
 
 export default function App() {
   const [isOpen, setIsOpen] = useState(false)
@@ -101,12 +99,6 @@ export default function App() {
                             <span className="inline-block text-sm text-gray-600">
                               {showSync && (isBoxSyncing ? `${DESYNCED_TEXT}` : `${SYNCED_TEXT}`)}
                             </span>
-                            <button
-                              className="p-1 text-gray-400 border-2 border-transparent rounded-full hover:text-white focus:outline-none focus:text-white focus:bg-gray-700"
-                              aria-label="Notifications"
-                            >
-                              <Bell className="w-6 h-6" />
-                            </button>
 
                             <div className="relative ml-3">
                               <div>
@@ -212,7 +204,7 @@ export default function App() {
             </Route>
             <Route path="/contacts" exact>
               {isConnected ? (
-                <div className="py-6 bg-white shadow sm:px-5 sm:rounded-lg sm:px-6">
+                <div className="py-6 bg-white shadow sm:rounded-lg sm:px-6">
                   <Contacts />
                 </div>
               ) : (
@@ -221,7 +213,7 @@ export default function App() {
             </Route>
             <Route path="/contacts/info" exact>
               {isConnected ? (
-                <div className="py-6 bg-white shadow sm:px-5 sm:rounded-lg sm:px-6">
+                <div className="py-6 bg-white shadow sm:rounded-lg sm:px-6">
                   <Info />
                 </div>
               ) : (
@@ -230,7 +222,7 @@ export default function App() {
             </Route>
             <Route path="/contacts/activity" exact>
               {isConnected ? (
-                <div className="py-6 bg-white shadow sm:px-5 sm:rounded-lg sm:px-6">
+                <div className="py-6 bg-white shadow sm:rounded-lg sm:px-6">
                   <Activity />
                 </div>
               ) : (
@@ -238,17 +230,6 @@ export default function App() {
               )}
             </Route>
           </div>
-          {/* isConnected && (
-            <span className="absolute inset-x-0 bottom-0 flex justify-center px-6 pb-6 rounded-md shadow-sm sm:justify-end sm:static sm:inline-flex">
-              <button
-                type="button"
-                className="inline-flex items-center px-6 py-6 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-orange-700 border border-transparent rounded-full sm:py-3 sm:rounded-md hover:bg-orange-800 focus:outline-none focus:border-orange-900 focus:shadow-outline-indigo active:bg-indigo-700"
-              >
-                <Plus className="w-6 h-6" />
-                <span className="hidden sm:inline sm:pl-2">Add Contacts</span>
-              </button>
-            </span>
-          ) */}
         </main>
       </div>
     </Router>
