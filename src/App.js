@@ -18,7 +18,7 @@ import Info from './components/Info'
 import Status from './components/Status'
 import Transition from './components/Transition'
 import Welcome from './components/Welcome'
-import Logo from '../media/svgs/logo.svg'
+import Tree from '../media/svgs/tree.svg'
 import MenuOpen from '../media/svgs/menu-open.svg'
 import MenuClose from '../media/svgs/menu-close.svg'
 
@@ -59,7 +59,11 @@ export default function App() {
                   <div className="flex items-center">
                     <div className="flex-shrink-0 text-gray-300">
                       <Link to="/">
-                        <Logo className="w-8 h-8" />
+                        <div className="flex items-center">
+                          <Tree className="w-8 h-8" />
+                          <div className="h-8 bg-orange-700" style={{ width: '.1rem' }}></div>
+                          <div className="font-mono ml-2 text-xl">Drasil</div>
+                        </div>
                       </Link>
                     </div>
                     <div className={`hidden ${isConnected && 'md:block'}`}>
