@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import Connect from './Connect'
 import store from '../state/store'
+import TreeLogo from '../../media/svgs/tree.svg'
 
 const Welcome: React.FC = (): JSX.Element => {
   const { setPageTitle } = store.usePageTitle
@@ -12,7 +13,6 @@ const Welcome: React.FC = (): JSX.Element => {
   })
 
   /*
-      //{!isConnected && <Connect />}
     <div className="px-6 mt-4 sm:px-0">
       <div className="text-gray-300">
         <div>Drasil Contacts</div>
@@ -29,6 +29,13 @@ const Welcome: React.FC = (): JSX.Element => {
     <div className="py-12 bg-white">
       <div className="max-w-screen-xl px-4 mx-auto sm:px-6 lg:px-8">
         <div className="lg:text-center">
+          <h3 className="flex items-center mt-2 text-3xl font-extrabold leading-8 tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
+            <div className="w-6 h-6">
+              <TreeLogo />
+            </div>
+            <div className="w-1 h-6 bg-orange-700"></div>
+            <div>Drasil Contacts</div>
+          </h3>
           <h3 className="mt-2 text-3xl font-extrabold leading-8 tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
             A better way to manage contacts
           </h3>
@@ -36,9 +43,14 @@ const Welcome: React.FC = (): JSX.Element => {
             Lorem ipsum dolor sit amet consect adipisicing elit. Possimus magnam voluptatum
             cupiditate veritatis in accusamus quisquam.
           </p>
+          {!isConnected && (
+            <div className="mt-12">
+              <Connect />
+            </div>
+          )}
         </div>
 
-        <div className="mt-10">
+        <div className="mt-16">
           <ul className="md:grid md:grid-cols-2 md:col-gap-8 md:row-gap-10">
             <li>
               <div className="flex">
