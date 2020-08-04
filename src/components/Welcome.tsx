@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import * as React from 'react'
+import { useEffect } from 'react'
 import store from '../state/store'
 
-export default function Welcome() {
+const Welcome: React.FC = (): JSX.Element => {
   const { setPageTitle } = store.usePageTitle
 
   useEffect(() => {
@@ -20,3 +21,5 @@ export default function Welcome() {
     </div>
   )
 }
+
+export default Welcome

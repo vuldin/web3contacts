@@ -1,5 +1,6 @@
+/*global Box*/
 import { useEffect, useRef, useState } from 'react'
-import store from '../state/store'
+import store from './store'
 
 export default function use3Box() {
   const [profile, setProfile] = useState({})

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { sleep } from '../helpers'
+import { sleep } from '../helpers.ts'
 
 export default function useStatus() {
   const [isConnected, setIsConnected] = useState(false)
