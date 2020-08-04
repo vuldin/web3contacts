@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
-import store from "../state/store";
-import { INFO_TITLE } from "../constants";
-import DefaultProfileImage from "../../svgs/default-profile.svg";
+import React, { useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import store from '../state/store'
+import { INFO_TITLE } from '../constants'
+import DefaultProfileImage from '../../svgs/default-profile.svg'
 
 export default function Info() {
-  const { setPageTitle } = store.usePageTitle;
+  const { setPageTitle } = store.usePageTitle
 
   useEffect(() => {
-    setPageTitle(INFO_TITLE);
-  });
+    setPageTitle(INFO_TITLE)
+  })
 
   return (
     //isInitialSyncComplete && (
@@ -18,9 +18,7 @@ export default function Info() {
         <div className="px-4 py-5 bg-white shadow sm:rounded-lg sm:p-6">
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Default
-              </h3>
+              <h3 className="text-lg font-medium leading-6 text-gray-900">Default</h3>
               <div className="mt-1 text-sm leading-5 text-gray-500">
                 <div>Subscriber count: 31</div>
                 <Link to="/activity" className="hover:underline">
@@ -31,9 +29,7 @@ export default function Info() {
             <div className="mt-5 md:mt-0 md:col-span-2">
               <form action="#" method="POST">
                 <div>
-                  <label className="block text-sm font-medium leading-5 text-gray-700">
-                    Photo
-                  </label>
+                  <label className="block text-sm font-medium leading-5 text-gray-700">Photo</label>
                   <div className="flex items-center mt-2">
                     <span className="inline-block w-12 h-12 overflow-hidden bg-gray-100 rounded-full">
                       <DefaultProfileImage className="w-full h-full text-gray-300" />
@@ -117,5 +113,5 @@ export default function Info() {
         </div>
       </>
     )
-  );
+  )
 }

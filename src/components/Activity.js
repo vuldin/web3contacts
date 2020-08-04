@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import store from "../state/store";
-import { ACTIVITY_TITLE } from "../constants";
-import ProfileDropdown from "./ProfileDropdown";
-import IncomingRequestImage from "../../svgs/arrow-circle-left.svg";
-import OutgoingRequestImage from "../../svgs/arrow-circle-right.svg";
-import Approve from "../../svgs/approve.svg";
-import Reject from "../../svgs/reject.svg";
+import React, { useEffect, useState } from 'react'
+import store from '../state/store'
+import { ACTIVITY_TITLE } from '../constants'
+import ProfileDropdown from './ProfileDropdown'
+import IncomingRequestImage from '../../svgs/arrow-circle-left.svg'
+import OutgoingRequestImage from '../../svgs/arrow-circle-right.svg'
+import Approve from '../../svgs/approve.svg'
+import Reject from '../../svgs/reject.svg'
 
 export default function Activity() {
-  const [isLogShown, setIsLogShown] = useState(false);
-  const { setPageTitle } = store.usePageTitle;
+  const [isLogShown, setIsLogShown] = useState(false)
+  const { setPageTitle } = store.usePageTitle
 
   useEffect(() => {
-    setPageTitle(ACTIVITY_TITLE);
-  });
+    setPageTitle(ACTIVITY_TITLE)
+  })
 
   return (
     <div>
@@ -130,7 +130,7 @@ export default function Activity() {
             aria-haspopup="true"
             onClick={() => setIsLogShown(!isLogShown)}
           >
-            {isLogShown ? "Hide" : "Show"} Log
+            {isLogShown ? 'Hide' : 'Show'} Log
           </button>
         </span>
         {isLogShown && (
@@ -202,5 +202,5 @@ export default function Activity() {
         )}
       </div>
     </div>
-  );
+  )
 }

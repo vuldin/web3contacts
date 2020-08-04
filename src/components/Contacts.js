@@ -1,35 +1,35 @@
-import React, { useEffect, useRef, useState } from "react";
-import store from "../state/store";
-import { ADDRESS_BOOK_TITLE } from "../constants";
-import Contact from "./Contact";
-import azulAvatar from "../../imgs/azul-serrano.png";
-import MoodNeutral from "../../svgs/mood-neutral-outline.svg";
+import React, { useEffect, useRef, useState } from 'react'
+import store from '../state/store'
+import { ADDRESS_BOOK_TITLE } from '../constants'
+import Contact from './Contact'
+import azulAvatar from '../../imgs/azul-serrano.png'
+import MoodNeutral from '../../svgs/mood-neutral-outline.svg'
 
 export default function Contacts() {
-  const [thread, setThread] = useState();
+  const [thread, setThread] = useState()
   const [contacts, setContacts] = useState([
     {
       avatarUrl: azulAvatar,
-      name: "Azul Serrano",
-      phoneNumber: "(+1) 123-456-7890",
-      email: "azul.serrano@example.com",
-    },
-  ]);
-  const firstRender = useRef(true);
-  const { setPageTitle } = store.usePageTitle;
-  const threadName = "contactInfo";
+      name: 'Azul Serrano',
+      phoneNumber: '(+1) 123-456-7890',
+      email: 'azul.serrano@example.com'
+    }
+  ])
+  const firstRender = useRef(true)
+  const { setPageTitle } = store.usePageTitle
+  const threadName = 'contactInfo'
 
   function parsePosts(posts) {
-    return posts.map((post) => {
-      const postJson = JSON.parse(post.message);
-      postJson.id = post.postId;
-      return postJson;
-    });
+    return posts.map(post => {
+      const postJson = JSON.parse(post.message)
+      postJson.id = post.postId
+      return postJson
+    })
   }
 
   useEffect(() => {
-    setPageTitle(ADDRESS_BOOK_TITLE);
-  });
+    setPageTitle(ADDRESS_BOOK_TITLE)
+  })
 
   /*
   useEffect(() => {
@@ -114,5 +114,5 @@ export default function Contacts() {
         </div>
       </div>
     </div>
-  );
+  )
 }

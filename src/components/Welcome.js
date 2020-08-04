@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import store from "../state/store";
+import React, { useEffect } from 'react'
+import store from '../state/store'
 
 export default function Welcome() {
-  const { setPageTitle } = store.usePageTitle;
+  const { setPageTitle } = store.usePageTitle
 
   useEffect(() => {
-    setPageTitle("Welcome");
-  });
+    setPageTitle('Welcome')
+  })
 
   return (
     <div className="text-gray-300">
@@ -18,5 +18,5 @@ export default function Welcome() {
       <div>Auto-updates and empowers users.</div>
       <div>Secure and privacy respecting.</div>
     </div>
-  );
+  )
 }

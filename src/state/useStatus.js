@@ -1,23 +1,23 @@
-import { useEffect, useState } from "react";
-import { sleep } from "../helpers";
+import { useEffect, useState } from 'react'
+import { sleep } from '../helpers'
 
 export default function useStatus() {
-  const [isConnected, setIsConnected] = useState(false);
-  const [isBoxSyncing, setIsBoxSyncing] = useState(false);
-  const [isInitialSyncComplete, setIsInitialSyncComplete] = useState(false);
-  const [showSync, setShowSync] = useState(false);
+  const [isConnected, setIsConnected] = useState(false)
+  const [isBoxSyncing, setIsBoxSyncing] = useState(false)
+  const [isInitialSyncComplete, setIsInitialSyncComplete] = useState(false)
+  const [showSync, setShowSync] = useState(false)
 
   useEffect(() => {
     async function updateSyncDisplay() {
-      setShowSync(true);
+      setShowSync(true)
       if (!isBoxSyncing) {
-        await sleep(2000);
-        setShowSync(false);
+        await sleep(2000)
+        setShowSync(false)
       }
     }
 
-    updateSyncDisplay();
-  }, [isBoxSyncing]);
+    updateSyncDisplay()
+  }, [isBoxSyncing])
 
   return {
     isConnected,
@@ -27,6 +27,6 @@ export default function useStatus() {
     isInitialSyncComplete,
     setIsInitialSyncComplete,
     showSync,
-    setShowSync,
-  };
+    setShowSync
+  }
 }

@@ -1,23 +1,23 @@
-const defaultTheme = require("tailwindcss/defaultTheme");
+const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter var", ...defaultTheme.fontFamily.sans],
+        sans: ['Inter var', ...defaultTheme.fontFamily.sans]
       },
       gridTemplateColumns: {
-        contacts: "30px auto",
-        skills: "100px auto",
-        "md-main": "min-content auto",
+        contacts: '30px auto',
+        skills: '100px auto',
+        'md-main': 'min-content auto'
       },
       gridTemplateRows: {
-        "md-main": "1fr auto",
-      },
-    },
+        'md-main': '1fr auto'
+      }
+    }
   },
   variants: {
-    userSelect: ["responsive", "hover", "focus"],
+    userSelect: ['responsive', 'hover', 'focus']
   },
-  plugins: ["@tailwindcss/ui"],
-};
+  plugins: ['@tailwindcss/ui']
+}
