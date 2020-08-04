@@ -49,7 +49,12 @@ export default function App() {
 
   useEffect(() => {
     document.activeElement.blur();
-  }, [pageTitle, isOpen]);
+  }, [isOpen]);
+
+  useEffect(() => {
+    document.activeElement.blur();
+    setIsOpen(false);
+  }, [pageTitle]);
 
   return (
     <Router>
