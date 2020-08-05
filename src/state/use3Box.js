@@ -4,6 +4,15 @@ import store from './store'
 
 export default function use3Box() {
   const [profile, setProfile] = useState({})
+  const [drasilProfiles, setDrasilProfiles] = useState([
+    {
+      profileName: 'default',
+      firstName: 'Josh',
+      lastName: 'Purcell',
+      email: 'hello@vuld.in',
+      phoneNumber: '1-203-429-5208'
+    }
+  ])
   const [isActivityThreadReady, setIsActivityThreadReady] = useState(false)
   const [subscriptionTarget, setSubscriptionTarget] = useState()
   const [posts, setPosts] = useState([])
@@ -95,5 +104,14 @@ export default function use3Box() {
     posts.length > 0 && console.log('posts', posts)
   }, [posts])
 
-  return { box, profile, space, subscriptionTarget, setSubscriptionTarget, posts }
+  return {
+    box,
+    profile,
+    space,
+    posts,
+    subscriptionTarget,
+    setSubscriptionTarget,
+    drasilProfiles,
+    setDrasilProfiles
+  }
 }
