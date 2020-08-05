@@ -6,6 +6,7 @@ export default function use3Box() {
   const [profile, setProfile] = useState({})
   const [isActivityThreadReady, setIsActivityThreadReady] = useState(false)
   const [subscriptionTarget, setSubscriptionTarget] = useState()
+  const [posts, setPosts] = useState([])
   const activityThread = useRef()
   const box = useRef()
   const space = useRef()
@@ -17,6 +18,8 @@ export default function use3Box() {
     setIsConnected
   } = store.useStatus
   const spaceName = 'drasil-contacts'
+  const threadAddress =
+    '/orbitdb/zdpuB135YEs7oHgc6qa5hWvdeJqT68RuEoi4WoimVSBPeP28b/3box.thread.drasil-contacts.activity'
 
   useEffect(() => {
     async function setBoxAndSpace() {
@@ -58,20 +61,14 @@ export default function use3Box() {
   useEffect(() => {
     async function subscribe() {
       console.log('subscribing to activityThread')
-      activityThread.current = await space.current.joinThread('activity')
-      //setActivityThread(thread);
+      // activityThread.current = await space.current.joinThread('activity')
+      activityThread.current = await space.current.joinThreadByAddress(threadAddress)
       setIsActivityThreadReady(true)
       console.log('subscribed to activityThread')
+      console.log(activityThread.current._address)
     }
 
     isInitialSyncComplete && subscribe()
-
-    /*
-    return async function unsubscribe() {
-      await space.current.unsubscribeThread(activityThread.current._address)
-      activityThread.current = null
-    }
-    */
   }, [isInitialSyncComplete])
 
   useEffect(() => {
@@ -81,12 +78,22 @@ export default function use3Box() {
       await activityThread.current.post(activity)
     }
 
-    isActivityThreadReady && subscriptionTarget && updateActivityThread(subscriptionTarget)
+    async function onNewActivity() {
+      await activityThread.current.onUpdate(async () => {
+        const posts = await activityThread.current.getPosts()
+        setPosts(posts)
+      })
+    }
+
+    if (isActivityThreadReady && subscriptionTarget) {
+      updateActivityThread(subscriptionTarget)
+      onNewActivity()
+    }
   }, [isActivityThreadReady, subscriptionTarget])
 
   useEffect(() => {
-    console.log('subscriptionTarget', subscriptionTarget)
-  }, [subscriptionTarget])
+    posts.length > 0 && console.log('posts', posts)
+  }, [posts])
 
-  return { box, profile, space, subscriptionTarget, setSubscriptionTarget }
+  return { box, profile, space, subscriptionTarget, setSubscriptionTarget, posts }
 }
