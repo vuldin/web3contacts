@@ -3,25 +3,30 @@ import store from '../state/store'
 import DefaultProfileImage from '../../media/svgs/default-profile.svg'
 
 export default function EditProfile({ profile, setIsAddProfileShown }) {
+  const { space, drasilProfiles, setDrasilProfiles } = store.use3Box
   const [inputs, setInputs] = profile
     ? useState(profile)
     : useState({
+        index: drasilProfiles.length,
         profileName: '',
         firstName: '',
         lastName: '',
         email: '',
         phoneNumber: ''
       })
-  const { drasilProfiles, setDrasilProfiles } = store.use3Box
 
   const handleInputChange = event => {
     const name = event.target.name
     setInputs({ ...inputs, [name]: event.target.value })
   }
 
-  const handleSubmit = event => {
+  async function handleSubmit(event) {
     event && event.preventDefault()
     setIsAddProfileShown(false)
+    const { index, ...profile } = inputs
+    const profileKeys = Object.keys(profile).map(key => `${index}_${key}`)
+    const profileValues = Object.values(profile)
+    await space.current.private.setMultiple(profileKeys, profileValues)
     setDrasilProfiles([...drasilProfiles, inputs])
   }
 

@@ -5,13 +5,16 @@ import store from './store'
 export default function use3Box() {
   const [profile, setProfile] = useState({})
   const [drasilProfiles, setDrasilProfiles] = useState([
+    /*
     {
+      index: 0,
       profileName: 'default',
       firstName: 'Josh',
       lastName: 'Purcell',
       email: 'hello@vuld.in',
       phoneNumber: '1-203-429-5208'
     }
+    */
   ])
   const [isActivityThreadReady, setIsActivityThreadReady] = useState(false)
   const [subscriptionTarget, setSubscriptionTarget] = useState()
@@ -69,15 +72,42 @@ export default function use3Box() {
 
   useEffect(() => {
     async function subscribe() {
-      console.log('subscribing to activityThread')
-      // activityThread.current = await space.current.joinThread('activity')
       activityThread.current = await space.current.joinThreadByAddress(threadAddress)
       setIsActivityThreadReady(true)
-      console.log('subscribed to activityThread')
-      console.log(activityThread.current._address)
     }
 
-    isInitialSyncComplete && subscribe()
+    async function getProfiles() {
+      const keyVals = await space.current.private.all()
+      const keys = Object.keys(keyVals)
+      const profileKeys = keys.filter(key => key.slice(1).startsWith('_'))
+      const indices = new Set()
+      profileKeys.forEach(key => {
+        const [indexString] = key.split('_')
+        const index = parseInt(indexString, 10)
+        !isNaN(index) && indices.add(index)
+      })
+      const profiles = [...Array(indices.size).keys()].map(index => {
+        const thisProfileKeys = profileKeys.filter(profileKey =>
+          profileKey.startsWith(index.toString())
+        )
+        const profile = Object.entries(keyVals)
+          .filter(entry => thisProfileKeys.includes(entry[0]))
+          .map(entry => ({ [entry[0]]: entry[1] }))
+        const drasilProfile = profile.reduce(function (obj, item) {
+          const [itemArr] = Object.entries(item)
+          obj[itemArr[0].split('_')[1]] = itemArr[1]
+          return obj
+        }, {})
+        drasilProfile.index = index
+        return drasilProfile
+      })
+      setDrasilProfiles(profiles)
+    }
+
+    if (isInitialSyncComplete) {
+      subscribe()
+      getProfiles()
+    }
   }, [isInitialSyncComplete])
 
   useEffect(() => {

@@ -18,7 +18,7 @@ export default function Contacts() {
   ])
   const [input, setInput] = useState({ value: '' })
   const { setPageTitle } = store.usePageTitle
-  const { setSubscriptionTarget } = store.use3Box
+  const { profile, setSubscriptionTarget } = store.use3Box
 
   const handleInputChange = event => {
     event.persist()
@@ -27,7 +27,10 @@ export default function Contacts() {
 
   const handleSubmit = event => {
     event && event.preventDefault()
+    console.log('handleSubmit')
+    console.log(profile)
     setIsRequestContactInfoShown(false)
+    // TODO pass at least name (and possibly 3ID)
     setSubscriptionTarget(input.value)
   }
 

@@ -17,8 +17,8 @@ export default function Info() {
   return (
     <div className="flex flex-col">
       {drasilProfiles.length > 0 ? (
-        drasilProfiles.map((drasilProfile, i) => (
-          <div key={i} className="p-6 bg-white shadow sm:rounded-lg sm:p-0">
+        drasilProfiles.map(drasilProfile => (
+          <div key={drasilProfile.index} className="p-6 bg-white shadow sm:rounded-lg sm:p-0">
             <EditProfile profile={drasilProfile} />
           </div>
         ))
