@@ -21,7 +21,8 @@ export default function use3Box() {
   const [posts, setPosts] = useState([])
   const activityThread = useRef()
   const box = useRef()
-  const space = useRef()
+  const contactsSpace = useRef()
+  const profilesSpace = useRef()
   const { accountPublicKey, setAccountPublicKey } = store.useAccountPublicKey
   const {
     setIsBoxSyncing,
@@ -29,7 +30,8 @@ export default function use3Box() {
     setIsInitialSyncComplete,
     setIsConnected
   } = store.useStatus
-  const spaceName = 'drasil-contacts'
+  const contactsSpaceName = 'drasil-contacts'
+  const profilesSpaceName = 'drasil-profiles'
   const threadAddress =
     '/orbitdb/zdpuB135YEs7oHgc6qa5hWvdeJqT68RuEoi4WoimVSBPeP28b/3box.thread.drasil-contacts.activity'
 
@@ -38,9 +40,14 @@ export default function use3Box() {
       if (!box.current) {
         setIsBoxSyncing(true)
         box.current = await Box.create(window.ethereum)
-        await box.current.auth([spaceName], { address: accountPublicKey })
-        space.current = await box.current.openSpace(spaceName)
+        await box.current.auth([contactsSpaceName, profilesSpaceName], {
+          address: accountPublicKey
+        })
+        contactsSpace.current = await box.current.openSpace(contactsSpaceName)
+        profilesSpace.current = await box.current.openSpace(profilesSpaceName)
         await box.current.syncDone
+        await contactsSpace.current.syncDone
+        await profilesSpace.current.syncDone
         setIsBoxSyncing(false)
         setIsInitialSyncComplete(true)
       }
@@ -72,12 +79,12 @@ export default function use3Box() {
 
   useEffect(() => {
     async function subscribe() {
-      activityThread.current = await space.current.joinThreadByAddress(threadAddress)
+      activityThread.current = await contactsSpace.current.joinThreadByAddress(threadAddress)
       setIsActivityThreadReady(true)
     }
 
     async function getProfiles() {
-      const keyVals = await space.current.private.all()
+      const keyVals = await profilesSpace.current.private.all()
       const keys = Object.keys(keyVals)
       const profileKeys = keys.filter(key => key.slice(1).startsWith('_'))
       const indices = new Set()
@@ -137,7 +144,8 @@ export default function use3Box() {
   return {
     box,
     profile,
-    space,
+    contactsSpace,
+    profilesSpace,
     posts,
     subscriptionTarget,
     setSubscriptionTarget,
