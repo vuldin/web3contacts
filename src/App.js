@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link, Redirect, useHistory } from 'react-router-dom'
 import {
   ACTIVITY_TITLE,
   ADDRESS_BOOK_TITLE,
@@ -23,6 +23,7 @@ import MenuOpen from '../media/svgs/menu-open.svg'
 import MenuClose from '../media/svgs/menu-close.svg'
 
 export default function App() {
+  let history = useHistory()
   const [isOpen, setIsOpen] = useState(false)
   store.useAccountPublicKey = useAccountPublicKey()
   store.useStatus = useStatus()
@@ -32,6 +33,7 @@ export default function App() {
   const { profile } = store.use3Box
   const { isBoxSyncing, isConnected, showSync } = store.useStatus
   const { pageTitle } = store.usePageTitle
+  const { box } = store.use3Box
 
   function isLinkActive(title) {
     return pageTitle === title
@@ -62,7 +64,7 @@ export default function App() {
                         <div className="flex items-center">
                           <Tree className="w-8 h-8" />
                           <div className="h-8 bg-orange-700" style={{ width: '.1rem' }}></div>
-                          <div className="font-mono ml-2 text-xl">Drasil</div>
+                          <div className="ml-2 font-mono text-xl">Drasil</div>
                         </div>
                       </Link>
                     </div>
@@ -141,6 +143,10 @@ export default function App() {
                                     </a>
                                     <a
                                       href="#"
+                                      onClick={e => {
+                                        e.preventDefault()
+                                        box.current.logout().then(() => history.push('/contacts'))
+                                      }}
                                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                     >
                                       Sign out

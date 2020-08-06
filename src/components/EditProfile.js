@@ -3,7 +3,7 @@ import store from '../state/store'
 import DefaultProfileImage from '../../media/svgs/default-profile.svg'
 
 export default function EditProfile({ profile, setIsAddProfileShown }) {
-  const { space, drasilProfiles, setDrasilProfiles } = store.use3Box
+  const { profilesSpace, drasilProfiles, setDrasilProfiles } = store.use3Box
   const [inputs, setInputs] = profile
     ? useState(profile)
     : useState({
@@ -26,8 +26,18 @@ export default function EditProfile({ profile, setIsAddProfileShown }) {
     const { index, ...profile } = inputs
     const profileKeys = Object.keys(profile).map(key => `${index}_${key}`)
     const profileValues = Object.values(profile)
-    await space.current.private.setMultiple(profileKeys, profileValues)
+    await profilesSpace.current.private.setMultiple(profileKeys, profileValues)
     setDrasilProfiles([...drasilProfiles, inputs])
+  }
+
+  const handleDeleteProfile = async e => {
+    console.log('deleting profile')
+    const profileKeys = Object.keys(profile).map(key => `${profile.index}_${key}`)
+    for (const key of profileKeys) {
+      await profilesSpace.current.private.remove(key)
+    }
+    console.log('profile deleted')
+    setDrasilProfiles(drasilProfiles.filter(drasilProfile => drasilProfile.index !== profile.index))
   }
 
   return (
@@ -133,7 +143,7 @@ export default function EditProfile({ profile, setIsAddProfileShown }) {
             Save
           </button>
         </span>
-        {setIsAddProfileShown && (
+        {setIsAddProfileShown ? (
           <span className="flex w-full mt-3 rounded-md shadow-sm sm:mt-0 sm:w-auto">
             <button
               type="button"
@@ -141,6 +151,16 @@ export default function EditProfile({ profile, setIsAddProfileShown }) {
               onClick={() => setIsAddProfileShown(false)}
             >
               Cancel
+            </button>
+          </span>
+        ) : (
+          <span className="flex w-full mt-3 rounded-md shadow-sm sm:mt-0 sm:w-auto">
+            <button
+              type="button"
+              className="inline-flex justify-center w-full px-4 py-2 text-base font-medium leading-6 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue sm:text-sm sm:leading-5"
+              onClick={handleDeleteProfile}
+            >
+              Delete
             </button>
           </span>
         )}

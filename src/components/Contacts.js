@@ -18,7 +18,12 @@ export default function Contacts() {
   ])
   const [input, setInput] = useState({ value: '' })
   const { setPageTitle } = store.usePageTitle
-  const { profile, setSubscriptionTarget, setSendSubscriptionRequest } = store.use3Box
+  const {
+    drasilProfiles,
+    setSubscriptionTarget,
+    setSubscriptionProfile,
+    setSendSubscriptionRequest
+  } = store.use3Box
 
   const handleInputChange = event => {
     event.persist()
@@ -27,9 +32,8 @@ export default function Contacts() {
 
   const handleSubmit = event => {
     event && event.preventDefault()
-    console.log('handleSubmit')
-    console.log(profile)
     setIsRequestContactInfoShown(false)
+    setSubscriptionProfile(drasilProfiles[0])
     setSubscriptionTarget(input.value)
     setSendSubscriptionRequest(true)
   }

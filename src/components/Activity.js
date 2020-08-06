@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
+import Notification from './Notification'
 import store from '../state/store'
 import { ACTIVITY_TITLE } from '../constants'
-import ProfileDropdown from './ProfileDropdown'
-import Approve from '../../media/svgs/approve.svg'
-import Reject from '../../media/svgs/reject.svg'
 
 export default function Activity() {
   const [isLogShown, setIsLogShown] = useState(false)
@@ -18,12 +16,7 @@ export default function Activity() {
     <div>
       <div>
         <div className="flex items-center h-8 mt-5 mb-3 text-gray-900">
-          {/*
-          <div className="inline-block w-8 ">
-            <IncomingRequestImage />
-          </div>
-          */}
-          <span className="pl-6 sm:pl-0">Requests (1)</span>
+          <span className="pl-6 sm:pl-0">Requests ({notifications.length})</span>
         </div>
         <div className="flex flex-col">
           <div className="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
@@ -46,29 +39,9 @@ export default function Activity() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  <tr>
-                    <td className="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap">
-                      Azul Serrano
-                    </td>
-                    <td className="hidden px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap md:table-cell">
-                      hello@vuld.in
-                    </td>
-                    <td className="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                      <ProfileDropdown />
-                    </td>
-                    <td className="px-6 py-2 text-sm font-medium leading-5 text-right whitespace-no-wrap">
-                      <a href="#">
-                        <div className="inline-block w-8 h-8 text-green-500">
-                          <Approve />
-                        </div>
-                      </a>
-                      <a href="#" className="ml-4">
-                        <div className="inline-block w-8 h-8 text-red-500">
-                          <Reject />
-                        </div>
-                      </a>
-                    </td>
-                  </tr>
+                  {notifications.map(notification => (
+                    <Notification key={notification.postId} notification={notification} />
+                  ))}
                 </tbody>
               </table>
             </div>
