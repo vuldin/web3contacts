@@ -23,6 +23,7 @@ export default function use3Box() {
   const [notifications, setNotifications] = useState([])
   const [lastTimestamp, setLastTimestamp] = useState(0)
   const notificationThread = useRef()
+  const myNotificationsThread = useRef()
   const box = useRef()
   const contactsSpace = useRef()
   const profilesSpace = useRef()
@@ -100,41 +101,66 @@ export default function use3Box() {
     const lastTimestampString = await activitySpace.current.private.get('lastTimestamp')
     const lastTimestampInt = parseInt(lastTimestampString, 10)
     console.log('lastTimestamp', lastTimestamp)
-    const newPosts = !isNaN(lastTimestampInt)
-      ? posts.filter(({ timestamp }) => timestamp > lastTimestamp) &&
-        setLastTimestamp(lastTimestampInt)
-      : posts
+    let newPosts = posts
+    if (!isNaN(lastTimestampInt)) {
+      newPosts = newPosts.filter(({ timestamp }) => timestamp > lastTimestamp)
+      setLastTimestamp(lastTimestampInt)
+    }
     console.log('newPosts')
     console.log(newPosts)
-    const notifications = newPosts.map(({ message }) => JSON.parse(message))
-    console.log('notifications')
-    console.log(notifications)
-    const otherNotifications = notifications.filter(({ src }) => src.threeId !== threeId)
-    console.log('otherNotifications')
-    console.log(otherNotifications)
-    setNotifications(otherNotifications)
+    if (newPosts.length > 0) {
+      const notifications = newPosts.map(({ message }) => JSON.parse(message))
+      console.log('notifications')
+      console.log(notifications)
+      const otherNotifications = notifications.filter(({ src }) => src.threeId !== threeId)
+      console.log('otherNotifications')
+      console.log(otherNotifications)
+
+      // add otherNotifications to private thread
+      for (const notification of otherNotifications) {
+        const notificationString = JSON.stringify(notification)
+        await myNotificationsThread.current.post(notificationString)
+      }
+
+      // update latestTimestamp
+      const newLatestTimestamp = newPosts[newPosts.length - 1].timestamp
+      console.log('setting lastTimestamp', newLatestTimestamp)
+      await activitySpace.current.private.set('lastTimestamp', newLatestTimestamp)
+    }
+
+    const subscribedThreads = await activitySpace.current.subscribedThreads()
+    console.log('subscribedThreads')
+    console.log(subscribedThreads)
+
+    // retrieve all private thread notifications
+    const myNotifications = await myNotificationsThread.current.getPosts()
+    console.log('myNotifications')
+    console.log(myNotifications)
+    //setNotifications(myNotifications)
   }
 
   useEffect(() => {
     async function subscribe() {
-      /*
-      const notificationThreadAddress = await activitySpace.current.public.get(
-        'notificationThreadAddress'
-      )
-      if (notificationThreadAddress) {
-        */
       notificationThread.current = await activitySpace.current.joinThreadByAddress(
         notificationThreadAddress
       )
-      /*
+
+      const myNotificationThreadAddress = await activitySpace.current.public.get(
+        'myNotificationsThreadAddress'
+      )
+      if (myNotificationThreadAddress) {
+        myNotificationsThread.current = await activitySpace.current.joinThreadByAddress(
+          myNotificationThreadAddress
+        )
       } else {
-        notificationThread.current = await activitySpace.current.joinThread('notifications')
+        myNotificationsThread.current = await activitySpace.current.createConfidentialThread(
+          'myNotificationsThreadAddress'
+        )
         await activitySpace.current.public.set(
-          'notificationThreadAddress',
-          notificationThread.current._address
+          'myNotificationsThreadAddress',
+          myNotificationsThread.current._address
         )
       }
-      */
       setIsNotificationThreadReady(true)
       await getNotifications()
     }
@@ -172,6 +198,19 @@ export default function use3Box() {
       getProfiles()
     }
   }, [isInitialSyncComplete])
+
+  useEffect(() => {
+    async function unsubscribe() {
+      const subscribedThreads = await activitySpace.current.subscribedThreads()
+      console.log('subscribedThreads')
+      console.log(subscribedThreads)
+      for (const subscribedThread of subscribedThreads) {
+        await activitySpace.current.unsubscribeThread(subscribedThread.address)
+      }
+    }
+
+    return unsubscribe
+  }, [])
 
   useEffect(() => {
     async function onNewNotifications() {

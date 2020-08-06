@@ -8,6 +8,7 @@ import Reject from '../../media/svgs/reject.svg'
 export default function Activity() {
   const [isLogShown, setIsLogShown] = useState(false)
   const { setPageTitle } = store.usePageTitle
+  const { notifications } = store.use3Box
 
   useEffect(() => {
     setPageTitle(ACTIVITY_TITLE)
