@@ -4,6 +4,7 @@ import store from './store'
 
 export default function use3Box() {
   const [profile, setProfile] = useState({})
+  const [threeId, setThreeId] = useState()
   const [drasilProfiles, setDrasilProfiles] = useState([
     /*
     {
@@ -16,13 +17,16 @@ export default function use3Box() {
     }
     */
   ])
-  const [isActivityThreadReady, setIsActivityThreadReady] = useState(false)
+  const [isNotificationThreadReady, setIsNotificationThreadReady] = useState(false)
   const [subscriptionTarget, setSubscriptionTarget] = useState()
-  const [posts, setPosts] = useState([])
-  const activityThread = useRef()
+  const [sendSubscriptionRequest, setSendSubscriptionRequest] = useState(false)
+  const [notifications, setNotifications] = useState([])
+  const [lastTimestamp, setLastTimestamp] = useState(0)
+  const notificationThread = useRef()
   const box = useRef()
   const contactsSpace = useRef()
   const profilesSpace = useRef()
+  const activitySpace = useRef()
   const { accountPublicKey, setAccountPublicKey } = store.useAccountPublicKey
   const {
     setIsBoxSyncing,
@@ -32,22 +36,33 @@ export default function use3Box() {
   } = store.useStatus
   const contactsSpaceName = 'drasil-contacts'
   const profilesSpaceName = 'drasil-profiles'
-  const threadAddress =
-    '/orbitdb/zdpuB135YEs7oHgc6qa5hWvdeJqT68RuEoi4WoimVSBPeP28b/3box.thread.drasil-contacts.activity'
+  const activitySpaceName = 'drasil-activity'
+  const notificationThreadAddress =
+    '/orbitdb/zdpuB2ztRAfRK9hCbjDFLkMB7he3UvsjGeiojy9AHji3dz98U/3box.thread.drasil-activity.notifications'
 
   useEffect(() => {
     async function setBoxAndSpace() {
       if (!box.current) {
         setIsBoxSyncing(true)
         box.current = await Box.create(window.ethereum)
-        await box.current.auth([contactsSpaceName, profilesSpaceName], {
+        await box.current.auth([contactsSpaceName, profilesSpaceName, activitySpaceName], {
           address: accountPublicKey
         })
-        contactsSpace.current = await box.current.openSpace(contactsSpaceName)
-        profilesSpace.current = await box.current.openSpace(profilesSpaceName)
-        await box.current.syncDone
-        await contactsSpace.current.syncDone
-        await profilesSpace.current.syncDone
+        const [contactsSpaceTemp, profilesSpaceTemp, activitySpaceTemp] = await Promise.all([
+          box.current.openSpace(contactsSpaceName),
+          box.current.openSpace(profilesSpaceName),
+          box.current.openSpace(activitySpaceName)
+        ])
+        contactsSpace.current = contactsSpaceTemp
+        profilesSpace.current = profilesSpaceTemp
+        activitySpace.current = activitySpaceTemp
+        await Promise.all([
+          box.current.syncDone,
+          contactsSpace.current.syncDone,
+          profilesSpace.current.syncDone,
+          activitySpace.current.syncDone
+        ])
+        setThreeId(box.current._3id._rootDID)
         setIsBoxSyncing(false)
         setIsInitialSyncComplete(true)
       }
@@ -77,10 +92,51 @@ export default function use3Box() {
     }
   }, [accountPublicKey])
 
+  async function getNotifications() {
+    console.log('getNotifications')
+    const posts = await notificationThread.current.getPosts()
+    console.log('posts')
+    console.log(posts)
+    const lastTimestampString = await activitySpace.current.private.get('lastTimestamp')
+    const lastTimestampInt = parseInt(lastTimestampString, 10)
+    console.log('lastTimestamp', lastTimestamp)
+    const newPosts = !isNaN(lastTimestampInt)
+      ? posts.filter(({ timestamp }) => timestamp > lastTimestamp) &&
+        setLastTimestamp(lastTimestampInt)
+      : posts
+    console.log('newPosts')
+    console.log(newPosts)
+    const notifications = newPosts.map(({ message }) => JSON.parse(message))
+    console.log('notifications')
+    console.log(notifications)
+    const otherNotifications = notifications.filter(({ src }) => src.threeId !== threeId)
+    console.log('otherNotifications')
+    console.log(otherNotifications)
+    setNotifications(otherNotifications)
+  }
+
   useEffect(() => {
     async function subscribe() {
-      activityThread.current = await contactsSpace.current.joinThreadByAddress(threadAddress)
-      setIsActivityThreadReady(true)
+      /*
+      const notificationThreadAddress = await activitySpace.current.public.get(
+        'notificationThreadAddress'
+      )
+      if (notificationThreadAddress) {
+        */
+      notificationThread.current = await activitySpace.current.joinThreadByAddress(
+        notificationThreadAddress
+      )
+      /*
+      } else {
+        notificationThread.current = await activitySpace.current.joinThread('notifications')
+        await activitySpace.current.public.set(
+          'notificationThreadAddress',
+          notificationThread.current._address
+        )
+      }
+      */
+      setIsNotificationThreadReady(true)
+      await getNotifications()
     }
 
     async function getProfiles() {
@@ -118,37 +174,49 @@ export default function use3Box() {
   }, [isInitialSyncComplete])
 
   useEffect(() => {
-    async function updateActivityThread(activity) {
-      console.log('updating activityThread')
-      console.log(activity)
-      await activityThread.current.post(activity)
+    async function onNewNotifications() {
+      await notificationThread.current.onUpdate(getNotifications)
     }
-
-    async function onNewActivity() {
-      await activityThread.current.onUpdate(async () => {
-        const posts = await activityThread.current.getPosts()
-        setPosts(posts)
-      })
-    }
-
-    if (isActivityThreadReady && subscriptionTarget) {
-      updateActivityThread(subscriptionTarget)
-      onNewActivity()
-    }
-  }, [isActivityThreadReady, subscriptionTarget])
+    isNotificationThreadReady && onNewNotifications()
+  }, [isNotificationThreadReady])
 
   useEffect(() => {
-    posts.length > 0 && console.log('posts', posts)
-  }, [posts])
+    async function updateNotificationThread(target) {
+      const notification = JSON.stringify({
+        target,
+        src: {
+          threeId,
+          name: `${profile.name}`
+        },
+        timestamp: Date.now()
+      })
+      await notificationThread.current.post(notification)
+    }
+
+    if (isNotificationThreadReady && sendSubscriptionRequest) {
+      updateNotificationThread(subscriptionTarget)
+      setSendSubscriptionRequest(false)
+    }
+  }, [isNotificationThreadReady, sendSubscriptionRequest])
+
+  useEffect(() => {
+    async function setRemoteTimeStamp() {
+      await activitySpace.current.private.set('lastTimestamp', lastTimestamp)
+    }
+
+    lastTimestamp && setRemoteTimeStamp()
+  }, [lastTimestamp])
 
   return {
     box,
     profile,
     contactsSpace,
     profilesSpace,
-    posts,
+    activitySpace,
+    notifications,
     subscriptionTarget,
     setSubscriptionTarget,
+    setSendSubscriptionRequest,
     drasilProfiles,
     setDrasilProfiles
   }
