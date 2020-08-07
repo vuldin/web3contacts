@@ -3,26 +3,18 @@ import store from '../state/store'
 import { ADDRESS_BOOK_TITLE } from '../constants'
 import Contact from './Contact'
 import Transition from './Transition'
-import azulAvatar from '../../media/imgs/azul-serrano.png'
 import MoodNeutral from '../../media/svgs/mood-neutral-outline.svg'
 
 export default function Contacts() {
   const [isRequestContactInfoShown, setIsRequestContactInfoShown] = useState(false)
-  const [contacts, setContacts] = useState([
-    {
-      avatarUrl: azulAvatar,
-      name: 'Azul Serrano',
-      phoneNumber: '(+1) 123-456-7890',
-      email: 'azul.serrano@example.com'
-    }
-  ])
   const [input, setInput] = useState({ value: '' })
   const { setPageTitle } = store.usePageTitle
   const {
     drasilProfiles,
     setSubscriptionTarget,
     setSubscriptionProfile,
-    setSendSubscriptionRequest
+    setSendSubscriptionRequest,
+    contacts
   } = store.use3Box
 
   const handleInputChange = event => {
@@ -182,7 +174,16 @@ export default function Contacts() {
                       htmlFor="contact_detail"
                       className="block text-sm font-medium leading-5 text-gray-700"
                     >
-                      Enter a contact detail to request access to their contact details.
+                      <div>Connect through most channels you are familiar with:</div>
+                      <ul className="list-disc list-inside">
+                        <li>email</li>
+                        <li>phoneNumber</li>
+                        <li>DID</li>
+                        <li>social media</li>
+                      </ul>
+                      <div className="pt-4">
+                        Enter a contact detail to request access to their contact details.
+                      </div>
                     </label>
                     <input
                       id="contact_detail"

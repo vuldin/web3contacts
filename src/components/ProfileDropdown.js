@@ -1,6 +1,9 @@
 import React from 'react'
+import store from '../state/store'
 
 export default function ProfileDropdown() {
+  const { drasilProfiles } = store.use3Box
+
   return (
     <div className="space-y-1">
       <div className="relative">
@@ -13,7 +16,7 @@ export default function ProfileDropdown() {
             className="relative w-full py-2 pl-3 pr-10 text-left transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md cursor-default focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5"
           >
             <span className="inline-flex w-full space-x-2 truncate">
-              <span className="truncate">Default</span>
+              <span className="truncate">{drasilProfiles[0]?.profileName || 'anonymous'}</span>
               {/*
               <span className="text-gray-500 truncate">email match</span>
               */}

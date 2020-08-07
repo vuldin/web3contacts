@@ -5,7 +5,7 @@ import Approve from '../../media/svgs/approve.svg'
 import Reject from '../../media/svgs/reject.svg'
 
 export default function Notification({ notification }) {
-  const { setDeleteNotificationPostId } = store.use3Box
+  const { setDeleteNotificationPostId, contacts, setContacts } = store.use3Box
   const { postId, fromProfile, channel, timestamp } = notification
 
   function generateName(fromProfile) {
@@ -24,6 +24,18 @@ export default function Notification({ notification }) {
     setDeleteNotificationPostId(postId)
   }
 
+  function handleAcceptClick(e) {
+    e.preventDefault()
+    const newContact = {
+      name: `${fromProfile.firstName} ${fromProfile.lastName}`,
+      phoneNumber: fromProfile.phoneNumber,
+      email: fromProfile.email
+    }
+    console.log(newContact)
+    setContacts([...contacts, newContact])
+    setDeleteNotificationPostId(postId)
+  }
+
   return (
     <tr>
       <td className="px-6 py-4 text-sm font-medium leading-5 text-gray-900 whitespace-no-wrap">
@@ -37,9 +49,13 @@ export default function Notification({ notification }) {
       </td>
       <td className="px-6 py-2 text-sm font-medium leading-5 text-right whitespace-no-wrap">
         <a href="#">
-          <div className="inline-block w-8 h-8 text-green-500">
+          <button
+            className="inline-block w-8 h-8 text-green-500"
+            value={postId}
+            onClick={handleAcceptClick}
+          >
             <Approve />
-          </div>
+          </button>
         </a>
         <a href="#" className="ml-4">
           <button

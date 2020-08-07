@@ -1,4 +1,5 @@
 import React from 'react'
+import DefaultProfile from '../../media/svgs/default-profile.svg'
 
 export default function Contact({ avatarUrl, name, phoneNumber, email }) {
   return (
@@ -6,7 +7,7 @@ export default function Contact({ avatarUrl, name, phoneNumber, email }) {
       <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
         <div className="flex items-center">
           <div className="flex-shrink-0 w-10 h-10">
-            <img className="w-10 h-10 rounded-full" src={avatarUrl} alt="avatar"></img>
+            <DefaultProfile />
           </div>
           <div className="ml-4">
             <div className="text-sm font-medium leading-5 text-gray-900">{name}</div>

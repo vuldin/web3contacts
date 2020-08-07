@@ -18,6 +18,16 @@ export default function use3Box() {
     }
     */
   ])
+  const [contacts, setContacts] = useState([
+    /*
+    {
+      avatarUrl: azulAvatar,
+      name: 'Azul Serrano',
+      phoneNumber: '(+1) 123-456-7890',
+      email: 'azul.serrano@example.com'
+    }
+    */
+  ])
   const [isNotificationThreadReady, setIsNotificationThreadReady] = useState(false)
   const [subscriptionTarget, setSubscriptionTarget] = useState()
   const [subscriptionProfile, setSubscriptionProfile] = useState({})
@@ -37,11 +47,11 @@ export default function use3Box() {
     setIsInitialSyncComplete,
     setIsConnected
   } = store.useStatus
-  const contactsSpaceName = 'drasil-contacts'
-  const profilesSpaceName = 'drasil-profiles'
-  const activitySpaceName = 'drasil-activity'
+  const contactsSpaceName = 'drasil1-contacts'
+  const profilesSpaceName = 'drasil1-profiles'
+  const activitySpaceName = 'drasil1-activity'
   const notificationThreadAddress =
-    '/orbitdb/zdpuB2ztRAfRK9hCbjDFLkMB7he3UvsjGeiojy9AHji3dz98U/3box.thread.drasil-activity.notifications'
+    '/orbitdb/zdpuAq6mbAfoLkYHk9Ti7Z9NgDz2LP36iNhg4KYJP2ptyF9B9/3box.thread.drasil1-activity.notificationsThread'
 
   useEffect(() => {
     async function setBoxAndSpace() {
@@ -74,6 +84,22 @@ export default function use3Box() {
         console.log(contactThreads)
         console.log(profileThreads)
         console.log(activityThreads)
+        console.log(
+          'initial subscribed threads',
+          contactThreads.length + profileThreads.length + activityThreads.length
+        )
+        /*
+        for (const thread of contactThreads) {
+          await contactsSpace.current.unsubscribeThread(thread.address)
+        }
+        for (const thread of profileThreads) {
+          await profilesSpace.current.unsubscribeThread(thread.address)
+        }
+        for (const thread of activityThreads) {
+          await activitySpace.current.unsubscribeThread(thread.address)
+        }
+        console.log('unsubscribe complete')
+        */
 
         setThreeId(box.current._3id._rootDID)
         setIsBoxSyncing(false)
@@ -99,10 +125,12 @@ export default function use3Box() {
       setProfile({})
     }
 
+    /*
     window.ethereum.on('accountsChanged', handleNewAccounts)
     return () => {
       window.ethereum.off('accountsChanged', handleNewAccounts)
     }
+    */
   }, [accountPublicKey])
 
   async function getNotifications() {
@@ -153,6 +181,11 @@ export default function use3Box() {
       notificationThread.current = await activitySpace.current.joinThreadByAddress(
         notificationThreadAddress
       )
+      /*
+      notificationThread.current = await activitySpace.current.joinThread('notificationsThread')
+      console.log(notificationThread.current.address)
+      */
+
       const myNotificationThreadAddress = await activitySpace.current.public.get(
         'myNotificationsThreadAddress'
       )
@@ -162,7 +195,7 @@ export default function use3Box() {
         )
       } else {
         myNotificationsThread.current = await activitySpace.current.createConfidentialThread(
-          'myNotificationsThreadAddress'
+          'myNotificationsThread'
         )
         await activitySpace.current.public.set(
           'myNotificationsThreadAddress',
@@ -268,6 +301,8 @@ export default function use3Box() {
     drasilProfiles,
     setDrasilProfiles,
     setDeleteNotificationPostId,
-    setSubscriptionProfile
+    setSubscriptionProfile,
+    contacts,
+    setContacts
   }
 }
